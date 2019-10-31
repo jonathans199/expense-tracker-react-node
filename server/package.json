@@ -1,0 +1,22 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/jso1919/expense-tracker.git"
+  },
+  "author": "Jonathan Sanchez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jso1919/expense-tracker/issues"
+  },
+  "homepage": "https://github.com/jso1919/expense-tracker#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
