@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 
-app.use(express.static('../client/build/')); 
+app.use(express.static('../client/public')); 
 
 // app.get('/', (res) => res.send('hello John'))
 
