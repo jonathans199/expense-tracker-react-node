@@ -11,7 +11,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build"
+    "build": "react-scripts build",
+    "watch": "cra-build-watch"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -28,5 +29,8 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:5000/"
+  "proxy": "http://localhost:5000/",
+  "devDependencies": {
+    "cra-build-watch": "^3.0.0"
+  }
 }
