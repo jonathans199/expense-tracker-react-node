@@ -2,18 +2,18 @@ import React from "react";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-// localStorage.removeItem('siteData')
-
-const expenses = [{ id: 1, expenseName: "", amount: 0, description: "" }];
-
 class App extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      id: "",
-      expenseName: "",
-      amount: "",
-      description: ""
+      items: [],
+      currentExpenseItem: {
+        id: "",
+        expenseName: "",
+        amount: "",
+        description: ""
+      }
     };
 
     this.handleInputs = this.handleInputs.bind(this);
@@ -21,34 +21,44 @@ class App extends React.Component {
     this.clearLocalStorage = this.clearLocalStorage.bind(this);
   }
 
-  handleInputs(e) {
+  componentDidMount() {
+    // if SITEDATA available create constant localData
+    const localData = JSON.parse(localStorage.getItem("siteData")) || [];
+
+    // pass localData into ITEM within STATE
     this.setState({
-      [e.target.name]: e.target.value
+      items: localData
     });
+  }
+
+  handleInputs(e) {
+    const currentState = { ...this.state };
+
+    currentState.currentExpenseItem[e.target.name] = e.target.value;
+
+    this.setState(currentState);
   }
 
   handleSubmit() {
     const siteData = {
-      id: this.state.id,
-      expenseName: this.state.expenseName,
-      amount: this.state.amount,
-      description: this.state.description
+      id: this.state.currentExpenseItem.id,
+      expenseName: this.state.currentExpenseItem.expenseName,
+      amount: this.state.currentExpenseItem.amount,
+      description: this.state.currentExpenseItem.description
     };
 
-    // push new expense into expenses array
-    expenses.push(siteData);
-    console.log(expenses);
+    this.setState(
+      {
+        items: [...this.state.items, siteData]
+      },
+      () => {
+        localStorage.setItem("siteData", JSON.stringify(this.state.items));
+      }
+    );
 
-    // storing array as a string
-    localStorage.setItem("siteData", JSON.stringify(expenses));
-
-    // clear State
-    this.setState({
-      id: Date.now(),
-      expenseName: "",
-      amount: "",
-      description: ""
-    });
+    // clear input fields
+    
+    
   }
 
   clearLocalStorage() {
@@ -56,15 +66,9 @@ class App extends React.Component {
   }
 
   render() {
-    // retriving our data and converting it back into an array
-    const localData = JSON.parse(localStorage.getItem("siteData"));
-
-    console.log(localData);
-
-    const allExpenses = localData.map(function(item) {
+    const allExpenses = this.state.items.map(function(item) {
       return (
-        <tr>
-          <th scope="row">{item.id}</th>
+        <tr key={item.id}>
           <td>{item.expenseName}</td>
           <td>{item.description}</td>
           <td>{item.amount}</td>
@@ -96,16 +100,15 @@ class App extends React.Component {
           </button>
         </form>
         <div>
-          <table class="table">
+          <table className="table">
             <thead>
               <tr>
-                <th scope="col">ID</th>
                 <th scope="col">Name</th>
                 <th scope="col">Description</th>
                 <th scope="col">Amount</th>
               </tr>
             </thead>
-            <tbody>{localData ? allExpenses : "no items yet"}</tbody>
+            <tbody>{allExpenses}</tbody>
           </table>
           here are expenses:
           <button onClick={this.clearLocalStorage}> Clear Local Storage</button>
