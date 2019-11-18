@@ -3,8 +3,8 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
 
     this.state = {
       items: [],
@@ -23,9 +23,9 @@ class App extends React.Component {
 
   componentDidMount() {
     // if SITEDATA available create constant localData
-    const localData = JSON.parse(localStorage.getItem("siteData")) || [];
+    const localData = JSON.parse(localStorage.getItem("singleItem")) || [];
 
-    // pass localData into ITEM within STATE
+    // pass localData into ITEMS within STATE
     this.setState({
       items: localData
     });
@@ -40,29 +40,33 @@ class App extends React.Component {
   }
 
   handleSubmit() {
-    const siteData = {
-      id: this.state.currentExpenseItem.id,
+    e.preventDefault();
+    const singleItem = {
+      id: Date.now(),
       expenseName: this.state.currentExpenseItem.expenseName,
       amount: this.state.currentExpenseItem.amount,
       description: this.state.currentExpenseItem.description
     };
 
+    // on every button click add singleItem
     this.setState(
       {
-        items: [...this.state.items, siteData]
+        items: [...this.state.items, singleItem]
       },
       () => {
-        localStorage.setItem("siteData", JSON.stringify(this.state.items));
+        localStorage.setItem("localData", JSON.stringify(this.state.items));
       }
     );
 
     // clear input fields
-    
-    
   }
 
   clearLocalStorage() {
-    localStorage.removeItem("siteData");
+    localStorage.removeItem("localData");
+
+    this.setState({
+      items: []
+    });
   }
 
   render() {
@@ -78,26 +82,29 @@ class App extends React.Component {
 
     return (
       <div>
-        <form>
+        <form className="form-input" onSubmit={this.handleSubmit} noValidate>
           <h3>Expense project</h3>
           <input
             name="expenseName"
             placeholder="Expense Name"
             onChange={this.handleInputs}
+            type="text"
+            required
           />
           <input
             name="amount"
             placeholder="Amount"
             onChange={this.handleInputs}
+            required
           />
           <input
             name="description"
             placeholder="Description"
             onChange={this.handleInputs}
+            type="text"
+            required
           />
-          <button type="button" onClick={this.handleSubmit}>
-            submit
-          </button>
+          <button type="button">submit</button>
         </form>
         <div>
           <table className="table">
@@ -110,8 +117,7 @@ class App extends React.Component {
             </thead>
             <tbody>{allExpenses}</tbody>
           </table>
-          here are expenses:
-          <button onClick={this.clearLocalStorage}> Clear Local Storage</button>
+          <button onClick={this.clearLocalStorage}> Clear</button>
         </div>
       </div>
     );
