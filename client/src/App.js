@@ -1,24 +1,28 @@
 import React from "react";
 import "./App.css";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+
 
 class App extends React.Component {
   constructor() {
     super();
-
     this.state = {
       items: [],
       currentExpenseItem: {
         id: "",
         expenseName: "",
         amount: "",
-        description: ""
-      }
+        description: "",
+        expenseDate: new Date()
+      }                
     };
 
     this.handleInputs = this.handleInputs.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.clearLocalStorage = this.clearLocalStorage.bind(this);
+    // this.handleDateChange = this.handleDateChange.bind(this)
   }
 
   componentDidMount() {
@@ -35,19 +39,31 @@ class App extends React.Component {
     const currentState = { ...this.state };
 
     currentState.currentExpenseItem[e.target.name] = e.target.value;
+    
+    console.log(currentState)
 
     this.setState(currentState);
+
+  }
+
+  handleDateChange(date){
+    this.setState({
+      currentExpenseItem: {
+        expenseDate: date
+      }
+      
+    })
   }
 
   handleSubmit() {
-    e.preventDefault();
     const singleItem = {
       id: Date.now(),
       expenseName: this.state.currentExpenseItem.expenseName,
       amount: this.state.currentExpenseItem.amount,
-      description: this.state.currentExpenseItem.description
+      description: this.state.currentExpenseItem.description,
+      expenseDate: this.state.currentExpenseItem.expenseDate
     };
-
+    
     // on every button click add singleItem
     this.setState(
       {
@@ -59,6 +75,7 @@ class App extends React.Component {
     );
 
     // clear input fields
+
   }
 
   clearLocalStorage() {
@@ -66,7 +83,7 @@ class App extends React.Component {
 
     this.setState({
       items: []
-    });
+    })
   }
 
   render() {
@@ -76,35 +93,38 @@ class App extends React.Component {
           <td>{item.expenseName}</td>
           <td>{item.description}</td>
           <td>{item.amount}</td>
+          <td>{item.expenseDate.date}</td> 
         </tr>
       );
     });
 
     return (
       <div>
-        <form className="form-input" onSubmit={this.handleSubmit} noValidate>
+        <form>
           <h3>Expense project</h3>
           <input
             name="expenseName"
             placeholder="Expense Name"
             onChange={this.handleInputs}
-            type="text"
-            required
           />
           <input
             name="amount"
             placeholder="Amount"
             onChange={this.handleInputs}
-            required
           />
           <input
             name="description"
             placeholder="Description"
             onChange={this.handleInputs}
-            type="text"
-            required
           />
-          <button type="button">submit</button>
+          <DatePicker
+            name="expenseDate"
+            selected={this.state.currentExpenseItem.expenseDate}
+            onChange={this.handleInputs}
+          />
+          <button type="button" onClick={this.handleSubmit}>
+            submit
+          </button>
         </form>
         <div>
           <table className="table">
@@ -113,6 +133,7 @@ class App extends React.Component {
                 <th scope="col">Name</th>
                 <th scope="col">Description</th>
                 <th scope="col">Amount</th>
+                <th scope="col">Date</th>
               </tr>
             </thead>
             <tbody>{allExpenses}</tbody>
