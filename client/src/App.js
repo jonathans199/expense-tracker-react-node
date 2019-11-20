@@ -3,7 +3,7 @@ import "./App.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-
+import { be } from "date-fns/locale";
 
 class App extends React.Component {
   constructor() {
@@ -16,13 +16,12 @@ class App extends React.Component {
         amount: "",
         description: "",
         expenseDate: new Date()
-      }                
+      }
     };
 
     this.handleInputs = this.handleInputs.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.clearLocalStorage = this.clearLocalStorage.bind(this);
-    // this.handleDateChange = this.handleDateChange.bind(this)
   }
 
   componentDidMount() {
@@ -39,31 +38,29 @@ class App extends React.Component {
     const currentState = { ...this.state };
 
     currentState.currentExpenseItem[e.target.name] = e.target.value;
-    
-    console.log(currentState)
+
+    console.log(currentState);
 
     this.setState(currentState);
-
-  }
-
-  handleDateChange(date){
-    this.setState({
-      currentExpenseItem: {
-        expenseDate: date
-      }
-      
-    })
   }
 
   handleSubmit() {
+    const today = this.state.currentExpenseItem.expenseDate
+
+    const dd = today.getDate();
+    const mm = today.getMonth() + 1;
+    const yyyy = today.getFullYear();
+
+    const fullDate = mm + "/" + dd + "/" + yyyy;
+
     const singleItem = {
       id: Date.now(),
       expenseName: this.state.currentExpenseItem.expenseName,
       amount: this.state.currentExpenseItem.amount,
       description: this.state.currentExpenseItem.description,
-      expenseDate: this.state.currentExpenseItem.expenseDate
+      expenseDate: fullDate
     };
-    
+
     // on every button click add singleItem
     this.setState(
       {
@@ -74,8 +71,7 @@ class App extends React.Component {
       }
     );
 
-    // clear input fields
-
+    // TO DO => clear input fields
   }
 
   clearLocalStorage() {
@@ -83,20 +79,24 @@ class App extends React.Component {
 
     this.setState({
       items: []
-    })
+    });
   }
 
   render() {
-    const allExpenses = this.state.items.map(function(item) {
-      return (
-        <tr key={item.id}>
-          <td>{item.expenseName}</td>
-          <td>{item.description}</td>
-          <td>{item.amount}</td>
-          <td>{item.expenseDate.date}</td> 
-        </tr>
-      );
-    });
+    const allExpenses = this.state.items
+      .map(function(item) {
+        return (
+          <tr key={item.id}>
+            <td>{item.expenseName}</td>
+            <td>{item.description}</td>
+            <td>{item.amount}</td>
+            <td>{item.expenseDate}</td>
+          </tr>
+        );
+      })
+      .sort(function(a, b) {
+        return a.expenseName - b.expenseDate;
+      });
 
     return (
       <div>
@@ -121,6 +121,7 @@ class App extends React.Component {
             name="expenseDate"
             selected={this.state.currentExpenseItem.expenseDate}
             onChange={this.handleInputs}
+            value={this.state.currentExpenseItem.expenseDate}
           />
           <button type="button" onClick={this.handleSubmit}>
             submit
