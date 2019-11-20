@@ -3,7 +3,6 @@ import "./App.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { be } from "date-fns/locale";
 
 class App extends React.Component {
   constructor() {
@@ -99,7 +98,7 @@ class App extends React.Component {
       });
 
     return (
-      <div>
+      <div className="expense-project">
         <form>
           <h3>Expense project</h3>
           <input
