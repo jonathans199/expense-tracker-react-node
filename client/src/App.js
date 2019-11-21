@@ -1,7 +1,5 @@
 import React from "react";
 import "./App.css";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 class App extends React.Component {
@@ -14,7 +12,7 @@ class App extends React.Component {
         expenseName: "",
         amount: "",
         description: "",
-        expenseDate: new Date()
+        date: ""
       }
     };
 
@@ -38,26 +36,16 @@ class App extends React.Component {
 
     currentState.currentExpenseItem[e.target.name] = e.target.value;
 
-    console.log(currentState);
-
     this.setState(currentState);
   }
 
   handleSubmit() {
-    const today = this.state.currentExpenseItem.expenseDate
-
-    const dd = today.getDate();
-    const mm = today.getMonth() + 1;
-    const yyyy = today.getFullYear();
-
-    const fullDate = mm + "/" + dd + "/" + yyyy;
-
     const singleItem = {
       id: Date.now(),
       expenseName: this.state.currentExpenseItem.expenseName,
       amount: this.state.currentExpenseItem.amount,
       description: this.state.currentExpenseItem.description,
-      expenseDate: fullDate
+      date: this.state.currentExpenseItem.date
     };
 
     // on every button click add singleItem
@@ -82,25 +70,30 @@ class App extends React.Component {
   }
 
   render() {
-    const allExpenses = this.state.items
+
+    if (JSON.parse(localStorage.getItem("localData"))) {
+      const allExpenses = JSON.parse(localStorage.getItem("localData")) 
       .map(function(item) {
         return (
           <tr key={item.id}>
             <td>{item.expenseName}</td>
             <td>{item.description}</td>
             <td>{item.amount}</td>
-            <td>{item.expenseDate}</td>
+            <td>{item.date}</td>
           </tr>
         );
       })
       .sort(function(a, b) {
-        return a.expenseName - b.expenseDate;
+        return a.date - b.date;
       });
+    } 
+      
+      
 
     return (
       <div className="expense-project">
         <form>
-          <h3>Expense project</h3>
+          <h3>React project</h3>
           <input
             name="expenseName"
             placeholder="Expense Name"
@@ -116,11 +109,10 @@ class App extends React.Component {
             placeholder="Description"
             onChange={this.handleInputs}
           />
-          <DatePicker
-            name="expenseDate"
-            selected={this.state.currentExpenseItem.expenseDate}
+          <input
+            name="date"
+            placeholder="mm / dd / yyyy"
             onChange={this.handleInputs}
-            value={this.state.currentExpenseItem.expenseDate}
           />
           <button type="button" onClick={this.handleSubmit}>
             submit
