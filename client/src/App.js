@@ -12,18 +12,19 @@ class App extends React.Component {
         expenseName: "",
         amount: "",
         description: "",
-        date: ""
+        date: new Date()
       }
     };
 
     this.handleInputs = this.handleInputs.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.clearLocalStorage = this.clearLocalStorage.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
   }
 
   componentDidMount() {
     // if SITEDATA available create constant localData
-    const localData = JSON.parse(localStorage.getItem("singleItem")) || [];
+    const localData = JSON.parse(localStorage.getItem("localData")) || [];
 
     // pass localData into ITEMS within STATE
     this.setState({
@@ -51,14 +52,18 @@ class App extends React.Component {
     // on every button click add singleItem
     this.setState(
       {
-        items: [...this.state.items, singleItem]
+        items: [...this.state.items, singleItem],
+        currentExpenseItem: {
+          expenseName: "",
+          amount: "",
+          description: "",
+          date: ""
+        }
       },
       () => {
         localStorage.setItem("localData", JSON.stringify(this.state.items));
       }
     );
-
-    // TO DO => clear input fields
   }
 
   clearLocalStorage() {
@@ -69,10 +74,14 @@ class App extends React.Component {
     });
   }
 
-  render() {
+  handleDelete(){
+    console.log('delete item')
+  }
 
-    if (JSON.parse(localStorage.getItem("localData"))) {
-      const allExpenses = JSON.parse(localStorage.getItem("localData")) 
+  render() {
+    const handleDelete = this.handleInputs
+
+    const allExpenses = this.state.items
       .map(function(item) {
         return (
           <tr key={item.id}>
@@ -80,39 +89,43 @@ class App extends React.Component {
             <td>{item.description}</td>
             <td>{item.amount}</td>
             <td>{item.date}</td>
+            <td>
+              <button>Delete</button>
+            </td>
           </tr>
         );
       })
       .sort(function(a, b) {
-        return a.date - b.date;
+        return a.expenseName - b.date;
       });
-    } 
-      
-      
 
     return (
       <div className="expense-project">
         <form>
-          <h3>React project</h3>
+          <h3>Expense project</h3>
           <input
             name="expenseName"
             placeholder="Expense Name"
             onChange={this.handleInputs}
+            value={this.state.currentExpenseItem.expenseName}
           />
           <input
             name="amount"
             placeholder="Amount"
             onChange={this.handleInputs}
+            value={this.state.currentExpenseItem.amount}
           />
           <input
             name="description"
             placeholder="Description"
             onChange={this.handleInputs}
+            value={this.state.currentExpenseItem.description}
           />
           <input
             name="date"
             placeholder="mm / dd / yyyy"
             onChange={this.handleInputs}
+            value={this.state.currentExpenseItem.date}
           />
           <button type="button" onClick={this.handleSubmit}>
             submit
@@ -126,6 +139,7 @@ class App extends React.Component {
                 <th scope="col">Description</th>
                 <th scope="col">Amount</th>
                 <th scope="col">Date</th>
+                
               </tr>
             </thead>
             <tbody>{allExpenses}</tbody>
