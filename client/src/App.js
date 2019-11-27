@@ -1,5 +1,6 @@
 import React from "react";
 import "./App.css";
+import propTypes from 'prop-types'
 import "bootstrap/dist/css/bootstrap.min.css";
 
 class App extends React.Component {
@@ -10,7 +11,7 @@ class App extends React.Component {
       currentExpenseItem: {
         id: "",
         expenseName: "",
-        amount: "",
+        amount: 0,
         description: "",
         date: new Date()
       }
@@ -20,6 +21,10 @@ class App extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.clearLocalStorage = this.clearLocalStorage.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
+  }
+
+  App.propTypes = {
+    
   }
 
   componentDidMount() {
@@ -36,11 +41,24 @@ class App extends React.Component {
     const currentState = { ...this.state };
 
     currentState.currentExpenseItem[e.target.name] = e.target.value;
+    
+    console.log(currentState)
 
     this.setState(currentState);
   }
 
   handleSubmit() {
+    /******
+     * TO DO 
+     * - validate fields
+     * 
+     */
+
+     if(this.state.currentExpenseItem.expenseName){
+        alert('it needs to be a string')
+     }
+
+
     const singleItem = {
       id: Date.now(),
       expenseName: this.state.currentExpenseItem.expenseName,
@@ -53,34 +71,37 @@ class App extends React.Component {
     this.setState(
       {
         items: [...this.state.items, singleItem],
+        
+        // clears the input fields 
         currentExpenseItem: {
           expenseName: "",
-          amount: "",
+          amount: 0,
           description: "",
           date: ""
         }
       },
       () => {
+        // second argument to put items from state in to localStorage
         localStorage.setItem("localData", JSON.stringify(this.state.items));
       }
     );
   }
 
+  // clear local storage
   clearLocalStorage() {
     localStorage.removeItem("localData");
 
+    //clearing state
     this.setState({
       items: []
     });
   }
 
-  handleDelete(){
-    console.log('delete item')
+  handleDelete() {
+    console.log("delete item");
   }
 
   render() {
-    const handleDelete = this.handleInputs
-
     const allExpenses = this.state.items
       .map(function(item) {
         return (
@@ -96,13 +117,13 @@ class App extends React.Component {
         );
       })
       .sort(function(a, b) {
-        return a.expenseName - b.date;
+        return a.date - b.date;
       });
 
     return (
       <div className="expense-project">
         <form>
-          <h3>Expense project</h3>
+          <h3>Expenses </h3>
           <input
             name="expenseName"
             placeholder="Expense Name"
@@ -139,7 +160,6 @@ class App extends React.Component {
                 <th scope="col">Description</th>
                 <th scope="col">Amount</th>
                 <th scope="col">Date</th>
-                
               </tr>
             </thead>
             <tbody>{allExpenses}</tbody>
