@@ -1,6 +1,5 @@
 import React from "react";
 import "./App.css";
-import propTypes from 'prop-types'
 import "bootstrap/dist/css/bootstrap.min.css";
 
 class App extends React.Component {
@@ -11,27 +10,20 @@ class App extends React.Component {
       currentExpenseItem: {
         id: "",
         expenseName: "",
-        amount: 0,
+        amount: "",
         description: "",
-        date: new Date()
+        date: ""
       }
     };
 
     this.handleInputs = this.handleInputs.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.clearLocalStorage = this.clearLocalStorage.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
-  }
-
-  App.propTypes = {
-    
   }
 
   componentDidMount() {
-    // if SITEDATA available create constant localData
     const localData = JSON.parse(localStorage.getItem("localData")) || [];
 
-    // pass localData into ITEMS within STATE
     this.setState({
       items: localData
     });
@@ -41,24 +33,11 @@ class App extends React.Component {
     const currentState = { ...this.state };
 
     currentState.currentExpenseItem[e.target.name] = e.target.value;
-    
-    console.log(currentState)
 
     this.setState(currentState);
   }
 
   handleSubmit() {
-    /******
-     * TO DO 
-     * - validate fields
-     * 
-     */
-
-     if(this.state.currentExpenseItem.expenseName){
-        alert('it needs to be a string')
-     }
-
-
     const singleItem = {
       id: Date.now(),
       expenseName: this.state.currentExpenseItem.expenseName,
@@ -67,63 +46,49 @@ class App extends React.Component {
       date: this.state.currentExpenseItem.date
     };
 
-    // on every button click add singleItem
     this.setState(
       {
         items: [...this.state.items, singleItem],
-        
-        // clears the input fields 
+
         currentExpenseItem: {
           expenseName: "",
-          amount: 0,
+          amount: "",
           description: "",
           date: ""
         }
       },
       () => {
-        // second argument to put items from state in to localStorage
         localStorage.setItem("localData", JSON.stringify(this.state.items));
       }
     );
   }
 
-  // clear local storage
   clearLocalStorage() {
     localStorage.removeItem("localData");
 
-    //clearing state
     this.setState({
       items: []
     });
   }
 
-  handleDelete() {
-    console.log("delete item");
-  }
-
   render() {
-    const allExpenses = this.state.items
-      .map(function(item) {
-        return (
-          <tr key={item.id}>
-            <td>{item.expenseName}</td>
-            <td>{item.description}</td>
-            <td>{item.amount}</td>
-            <td>{item.date}</td>
-            <td>
-              <button>Delete</button>
-            </td>
-          </tr>
-        );
-      })
-      .sort(function(a, b) {
-        return a.date - b.date;
-      });
+    const allExpenses = this.state.items.map(function(item) {
+      return (
+        <tr key={item.id}>
+          <td>{item.expenseName}</td>
+          <td>{item.description}</td>
+          <td>${item.amount}</td>
+          <td>{item.date}</td>
+        </tr>
+      );
+    });
 
     return (
-      <div className="expense-project">
-        <form>
-          <h3>Expenses </h3>
+      <div className="container text-center expense-project">
+        <h1 className="mt-5">Expense App</h1>
+        <p className="mb-5 text-muted">in React and Node.js</p>
+        <form className="mb-5">
+          
           <input
             name="expenseName"
             placeholder="Expense Name"
@@ -146,7 +111,7 @@ class App extends React.Component {
             name="date"
             placeholder="mm / dd / yyyy"
             onChange={this.handleInputs}
-            value={this.state.currentExpenseItem.date}
+            // value={this.state.currentExpenseItem.date}
           />
           <button type="button" onClick={this.handleSubmit}>
             submit
@@ -164,7 +129,7 @@ class App extends React.Component {
             </thead>
             <tbody>{allExpenses}</tbody>
           </table>
-          <button onClick={this.clearLocalStorage}> Clear</button>
+          <button onClick={this.clearLocalStorage}>Clear</button>
         </div>
       </div>
     );
