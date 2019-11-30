@@ -2,9 +2,15 @@
 
 ![Todo in React](/screenshot.png)
 
-## Technologies Used: 
+# Deliverables
+* There should be a single page
+* All expenses should be in an HTML table
+* Expenses should be sorted by date by default
+* Each expense should include:
+* The date of expense
+* A description of the expense
 
-Some sites using this project :
+## Technologies Used: 
 
 # Client
 * [React : Javascript Framework](https://reactjs.org/)
