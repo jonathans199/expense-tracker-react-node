@@ -5,10 +5,11 @@
 # Deliverables
 * There should be a single page
 * All expenses should be in an HTML table
-* Expenses should be sorted by date by default
+* Expenses should be saved in Local Storage
 * Each expense should include:
-* The date of expense
-* A description of the expense
+* Name, amount, description & date 
+* Node.js server using express as webserver
+* Node serving public index.html from React build
 
 ## Technologies Used: 
 
