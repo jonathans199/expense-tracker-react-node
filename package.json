@@ -1,0 +1,22 @@
+{
+  "name": "expense-tracker",
+  "version": "1.0.0",
+  "description": "Expense tracker React in node.js",
+  "main": "index.js",
+  "engines": {
+    "node": "11.15.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jso1919/expense-tracker-react-node.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jso1919/expense-tracker-react-node/issues"
+  },
+  "homepage": "https://github.com/jso1919/expense-tracker-react-node#readme"
+}
